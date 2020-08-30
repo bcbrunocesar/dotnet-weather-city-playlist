@@ -2,6 +2,18 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.1": {
+      "AspNet.Security.OAuth.Spotify/3.1.3": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/AspNet.Security.OAuth.Spotify.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/AspNet.Security.OAuth.Spotify.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -684,6 +696,18 @@
             "assetType": "native",
             "rid": "ubuntu.16.10-x64"
           }
+        }
+      },
+      "SpotifyAPI.Web/6.0.0-beta.11": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "lib/netstandard2.1/SpotifyAPI.Web.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/SpotifyAPI.Web.dll": {}
         }
       },
       "System.AppContext/4.3.0": {
@@ -1801,6 +1825,20 @@
     }
   },
   "libraries": {
+    "AspNet.Security.OAuth.Spotify/3.1.3": {
+      "sha512": "3QwhBsM3P/d0JyIjmIJ7WQboQUdalPc77Z7CeUem/TCjxOLmPXiOBc5CJqTY07/e9F10yqHO3pYjRP5BgglVqw==",
+      "type": "package",
+      "path": "aspnet.security.oauth.spotify/3.1.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "aspnet.security.oauth.spotify.3.1.3.nupkg.sha512",
+        "aspnet.security.oauth.spotify.nuspec",
+        "lib/netcoreapp3.1/AspNet.Security.OAuth.Spotify.dll",
+        "lib/netcoreapp3.1/AspNet.Security.OAuth.Spotify.xml"
+      ]
+    },
     "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
       "sha512": "Y4rs5aMEXY8G7wJo5S3EEt6ltqyOTr/qOeZzfn+hw/fuQj5GppGckMY5psGLETo1U9hcT5MmAhaT5xtusM1b5g==",
       "type": "package",
@@ -2847,6 +2885,21 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "SpotifyAPI.Web/6.0.0-beta.11": {
+      "sha512": "vLmoiChd0TjQQXpQkur4nw+e2OBRXiw6ZOfFtu4Ac+0ARLUZOMocGfEFvexP+HzliOLjV7q9rSfm255xV8A2CA==",
+      "type": "package",
+      "path": "spotifyapi.web/6.0.0-beta.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/SpotifyAPI.Web.dll",
+        "lib/netstandard2.0/SpotifyAPI.Web.xml",
+        "lib/netstandard2.1/SpotifyAPI.Web.dll",
+        "lib/netstandard2.1/SpotifyAPI.Web.xml",
+        "spotifyapi.web.6.0.0-beta.11.nupkg.sha512",
+        "spotifyapi.web.nuspec"
       ]
     },
     "System.AppContext/4.3.0": {
@@ -6066,8 +6119,10 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "AspNet.Security.OAuth.Spotify >= 3.1.3",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.4",
-      "Newtonsoft.Json >= 12.0.3"
+      "Newtonsoft.Json >= 12.0.3",
+      "SpotifyAPI.Web >= 6.0.0-beta.11"
     ]
   },
   "packageFolders": {
@@ -6111,6 +6166,10 @@
     "frameworks": {
       "netcoreapp3.1": {
         "dependencies": {
+          "AspNet.Security.OAuth.Spotify": {
+            "target": "Package",
+            "version": "[3.1.3, )"
+          },
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "[3.1.4, )"
@@ -6118,6 +6177,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[12.0.3, )"
+          },
+          "SpotifyAPI.Web": {
+            "target": "Package",
+            "version": "[6.0.0-beta.11, )"
           }
         },
         "imports": [

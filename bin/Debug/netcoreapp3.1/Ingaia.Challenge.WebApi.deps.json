@@ -24,8 +24,10 @@
     ".NETCoreApp,Version=v3.1": {
       "Ingaia.Challenge.WebApi/1.0.0": {
         "dependencies": {
+          "AspNet.Security.OAuth.Spotify": "3.1.3",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.4",
           "Newtonsoft.Json": "12.0.3",
+          "SpotifyAPI.Web": "6.0.0-beta.11",
           "Microsoft.AspNetCore.Antiforgery": "3.1.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions": "3.1.0.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "3.1.0.0",
@@ -314,6 +316,17 @@
         },
         "compile": {
           "Ingaia.Challenge.WebApi.dll": {}
+        }
+      },
+      "AspNet.Security.OAuth.Spotify/3.1.3": {
+        "runtime": {
+          "lib/netcoreapp3.1/AspNet.Security.OAuth.Spotify.dll": {
+            "assemblyVersion": "3.1.3.0",
+            "fileVersion": "3.100.320.36630"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/AspNet.Security.OAuth.Spotify.dll": {}
         }
       },
       "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
@@ -847,6 +860,20 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
+      "SpotifyAPI.Web/6.0.0-beta.11": {
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.1/SpotifyAPI.Web.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.1/SpotifyAPI.Web.dll": {}
+        }
+      },
       "System.AppContext/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
@@ -3236,6 +3263,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "AspNet.Security.OAuth.Spotify/3.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3QwhBsM3P/d0JyIjmIJ7WQboQUdalPc77Z7CeUem/TCjxOLmPXiOBc5CJqTY07/e9F10yqHO3pYjRP5BgglVqw==",
+      "path": "aspnet.security.oauth.spotify/3.1.3",
+      "hashPath": "aspnet.security.oauth.spotify.3.1.3.nupkg.sha512"
+    },
     "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
       "type": "package",
       "serviceable": true,
@@ -3529,6 +3563,13 @@
       "sha512": "sha512-VB5cn/7OzUfzdnC8tqAIMQciVLiq2epm2NrAm1E9OjNRyG4lVhfR61SMcLizejzQP8R8Uf/0l5qOIbUEi+RdEg==",
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512"
+    },
+    "SpotifyAPI.Web/6.0.0-beta.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vLmoiChd0TjQQXpQkur4nw+e2OBRXiw6ZOfFtu4Ac+0ARLUZOMocGfEFvexP+HzliOLjV7q9rSfm255xV8A2CA==",
+      "path": "spotifyapi.web/6.0.0-beta.11",
+      "hashPath": "spotifyapi.web.6.0.0-beta.11.nupkg.sha512"
     },
     "System.AppContext/4.3.0": {
       "type": "package",

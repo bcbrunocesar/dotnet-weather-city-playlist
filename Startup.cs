@@ -24,7 +24,11 @@ namespace Ingaia.Challenge.WebApi
 
             services.AddOptions();
             services.Configure<WeatherForecastConfig>(Configuration.GetSection("OpenWeatherMapConfig"));
+            services.Configure<PlaylistConfig>(Configuration.GetSection("PlaylistConfig"));
+
             services.AddTransient<IWeatherForecastService, WeatherForecastService>();
+            services.AddTransient<IPlaylistService, PlaylistService>();
+            services.AddTransient<IAppService, AppService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

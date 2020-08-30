@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Interfaces
 {
-    public interface IAppService
+    public interface IPlaylistService
     {
-        Task<IEnumerable<string>> GetWeatherPlaylist(string cityName);
+        Task<IEnumerable<string>> GetPlaylistTracks(string genre);
     }
 }

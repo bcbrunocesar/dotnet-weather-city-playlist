@@ -1,31 +1,34 @@
 ﻿using Ingaia.Challenge.WebApi.Enums;
 using Ingaia.Challenge.WebApi.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Services
 {
-    public class AppService
+    public class AppService : IAppService
     {
-        private readonly ISpotifyService _spotifyService;
+        private readonly IPlaylistService _playlistService;
         private readonly IWeatherForecastService _weatherForecastService;
 
-        public AppService(ISpotifyService spotifyService, IWeatherForecastService weatherForecastService)
+        public AppService(IPlaylistService playlistService, IWeatherForecastService weatherForecastService)
         {
             _weatherForecastService = weatherForecastService;
-            _spotifyService = spotifyService;
+            _playlistService = playlistService;
         }
 
-        public void GetPlaylistByTemperature(int temperature)
+        public async Task<IEnumerable<string>> GetWeatherPlaylist(string cityName)
         {
-        // Consumir weatherForecast
-        // Consumir playlist com o retorno do weatherForecast
-        // Retornar erro caso algum dos endpoints não respondam ou dê algum erro
-        // Tratar reconexão com o spotify caso o token vença
-        // Utilizar cache
+            var weatherForecastNow = await _weatherForecastService.GetByCity(cityName);
+            var playlistGenre = GetPlaylistGenre(weatherForecastNow.Temperature);
 
-        // https://github.com/JohnnyCrazy/SpotifyAPI-NET
+            var tracks = await _playlistService.GetPlaylistTracks(playlistGenre.ToString());
+            return tracks;
+
+            // Retornar erro caso algum dos endpoints não respondam ou dê algum erro
+            // Utilizar cache
         }
 
-        private EPlaylist GetPlaylist(int temperature)
+        private EPlaylist GetPlaylistGenre(int temperature)
         {
             if (temperature < 10)
             {

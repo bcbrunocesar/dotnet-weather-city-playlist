@@ -16,10 +16,15 @@ namespace Ingaia.Challenge.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("v1/weather-forecast")]
         public async Task<IActionResult> Get(string cityName)
         {
-            return Ok();
+            if (string.IsNullOrEmpty(cityName))
+            {
+                return BadRequest();
+            }
+
+            var playlist = await _appService.GetWeatherPlaylist(cityName);
+            return Ok(playlist);
         }
     }
 }

@@ -89,4 +89,6 @@ C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\bin\Debug\netcor
 C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\bin\Debug\netcoreapp3.1\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\bin\Debug\netcoreapp3.1\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\bin\Debug\netcoreapp3.1\AspNet.Security.OAuth.Spotify.dll
+C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\bin\Debug\netcoreapp3.1\SpotifyAPI.Web.dll
 C:\DEV\pessoal\dotnet\in-gaia-challenge\Ingaia.Challenge.WebApi\obj\Debug\netcoreapp3.1\Ingaia.Challenge.WebApi.MvcApplicationPartsAssemblyInfo.cache
