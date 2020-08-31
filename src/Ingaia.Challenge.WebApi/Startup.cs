@@ -21,6 +21,7 @@ namespace Ingaia.Challenge.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddResponseCaching();
 
             services.AddOptions();
             services.Configure<WeatherForecastConfig>(Configuration.GetSection("OpenWeatherMapConfig"));
@@ -39,6 +40,7 @@ namespace Ingaia.Challenge.WebApi
             }
 
             app.UseHttpsRedirection();
+            app.UseResponseCaching();
             app.UseRouting();
             app.UseAuthorization();
 

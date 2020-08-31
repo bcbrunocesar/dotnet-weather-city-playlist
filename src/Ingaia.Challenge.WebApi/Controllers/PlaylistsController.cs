@@ -16,6 +16,7 @@ namespace Ingaia.Challenge.WebApi.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 900, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "cityName" })]
         public async Task<IActionResult> Get(string cityName)
         {
             if (string.IsNullOrEmpty(cityName))
@@ -23,7 +24,7 @@ namespace Ingaia.Challenge.WebApi.Controllers
                 return BadRequest();
             }
 
-            var playlist = await _appService.GetWeatherPlaylist(cityName);
+            var playlist = await _appService.GetWeatherPlaylist(cityName);          
             return Ok(playlist);
         }
     }
