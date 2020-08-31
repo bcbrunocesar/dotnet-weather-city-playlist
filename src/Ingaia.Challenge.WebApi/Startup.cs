@@ -1,8 +1,11 @@
 using Ingaia.Challenge.WebApi.Config;
+using Ingaia.Challenge.WebApi.Context;
 using Ingaia.Challenge.WebApi.Interfaces;
+using Ingaia.Challenge.WebApi.Repositories;
 using Ingaia.Challenge.WebApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +23,9 @@ namespace Ingaia.Challenge.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(Configuration["SqlLiteConnectionString:IngaiaDb"]));
+
             services.AddControllers();
             services.AddResponseCaching();
 
@@ -30,6 +36,7 @@ namespace Ingaia.Challenge.WebApi
             services.AddTransient<IWeatherForecastService, WeatherForecastService>();
             services.AddTransient<IPlaylistService, PlaylistService>();
             services.AddTransient<IAppService, AppService>();
+            services.AddTransient<ICityStatisticRepository, CityStatisticRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -39,14 +46,14 @@ namespace Ingaia.Challenge.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
             app.UseResponseCaching();
             app.UseRouting();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -25,7 +25,6 @@ namespace Ingaia.Challenge.WebApi.Services
             return tracks;
 
             // Retornar erro caso algum dos endpoints não respondam ou dê algum erro
-            // Utilizar cache
         }
 
         private EPlaylist GetPlaylistGenre(int temperature)

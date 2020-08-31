@@ -1,6 +1,7 @@
 ﻿using Ingaia.Challenge.WebApi.Config;
 using Ingaia.Challenge.WebApi.Interfaces;
 using Ingaia.Challenge.WebApi.Models;
+using Ingaia.Challenge.WebApi.Repositories;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,10 +15,12 @@ namespace Ingaia.Challenge.WebApi.Services
         private const string UNIT = "metric";
 
         private readonly IOptions<WeatherForecastConfig> _openWeatherMapConfig;
+        private readonly ICityStatisticRepository _cityRepository;
 
-        public WeatherForecastService(IOptions<WeatherForecastConfig> openWeatherMapConfig)
+        public WeatherForecastService(IOptions<WeatherForecastConfig> openWeatherMapConfig, ICityStatisticRepository cityRepository)
         {
             _openWeatherMapConfig = openWeatherMapConfig;
+            _cityRepository = cityRepository;
         }
 
         public async Task<WeatherForecastModel> GetByCity(string cityName)
@@ -30,6 +33,8 @@ namespace Ingaia.Challenge.WebApi.Services
                 var response = await client.GetAsync($"?q={cityName}&appid={_openWeatherMapConfig.Value.Token}&units={UNIT}");
                 if (response.IsSuccessStatusCode)
                 {
+                    await _cityRepository.AddAsync(new CityStatisticModel(cityName));
+
                     var jsonAsString = await response.Content.ReadAsStringAsync();
                     var jsonObject = JObject.Parse(jsonAsString)["main"];
                     weatherForecastModel = jsonObject.ToObject<WeatherForecastModel>();
