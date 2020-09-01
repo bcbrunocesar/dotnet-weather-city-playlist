@@ -27,7 +27,8 @@ namespace Ingaia.Challenge.WebApi
                 options.UseSqlite(Configuration["SqlLiteConnectionString:IngaiaDb"]));
 
             services.AddControllers();
-            services.AddResponseCaching();
+            services.AddMemoryCache();
+            services.AddLogging();
 
             services.AddOptions();
             services.Configure<WeatherForecastConfig>(Configuration.GetSection("OpenWeatherMapConfig"));

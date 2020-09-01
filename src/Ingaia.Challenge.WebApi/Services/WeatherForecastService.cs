@@ -33,8 +33,6 @@ namespace Ingaia.Challenge.WebApi.Services
                 var response = await client.GetAsync($"?q={cityName}&appid={_openWeatherMapConfig.Value.Token}&units={UNIT}");
                 if (response.IsSuccessStatusCode)
                 {
-                    await _cityRepository.AddAsync(new CityRequestModel(cityName));
-
                     var jsonAsString = await response.Content.ReadAsStringAsync();
                     var jsonObject = JObject.Parse(jsonAsString)["main"];
                     weatherForecastModel = jsonObject.ToObject<WeatherForecastModel>();
@@ -42,6 +40,11 @@ namespace Ingaia.Challenge.WebApi.Services
             }
 
             return weatherForecastModel;
+        }
+
+        public async Task AddAsync(string cityName)
+        {
+            await _cityRepository.AddAsync(new CityRequestModel(cityName));
         }
     }
 }

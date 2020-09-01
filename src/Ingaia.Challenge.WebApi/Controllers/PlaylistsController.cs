@@ -21,8 +21,6 @@ namespace Ingaia.Challenge.WebApi.Controllers
             return Ok(citiesRequests);
         }
 
-        // Colocar o cache dentro do serviço/ ou verificar se existe cache, salvar no bd, e depois retornar o cache
-        // [ResponseCache(Duration = 900, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "cityName" })]
         [HttpGet]
         [Route("api/v1/weather-playlist/{cityName}")]
         public async Task<IActionResult> Get(string cityName)
