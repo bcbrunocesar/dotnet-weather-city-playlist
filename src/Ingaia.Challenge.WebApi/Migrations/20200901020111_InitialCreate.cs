@@ -8,7 +8,7 @@ namespace Ingaia.Challenge.WebApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CitiesStatistics",
+                name: "CitiesRequests",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -18,14 +18,14 @@ namespace Ingaia.Challenge.WebApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CitiesStatistics", x => x.Id);
+                    table.PrimaryKey("PK_CitiesRequests", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CitiesStatistics");
+                name: "CitiesRequests");
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Ingaia.Challenge.WebApi.Services
             _spotifyClient = new SpotifyClient(config);
         }
 
-        public async Task<IEnumerable<string>> GetPlaylistTracks(string genre)
+        public async Task<IEnumerable<string>> GetPlaylistTracksAsync(string genre)
         {
             var tracks = new List<string>();
             var playlistSearch = await SearchPlaylistByGenre(genre);
@@ -56,7 +56,7 @@ namespace Ingaia.Challenge.WebApi.Services
 
             return playlist.Playlists.Items.Count > 0
                 ? playlist.Playlists.Items[0]
-                : new SimplePlaylist();
+                : default;
         }
 
         private async Task<FullPlaylist> GetPlaylistById(string playlistId)

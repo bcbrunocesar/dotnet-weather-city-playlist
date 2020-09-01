@@ -5,6 +5,6 @@ namespace Ingaia.Challenge.WebApi.Interfaces
 {
     public interface IWeatherForecastService
     {
-        Task<WeatherForecastModel> GetByCity(string cityName);
+        Task<WeatherForecastModel> GetByCityAsync(string cityName);
     }
 }

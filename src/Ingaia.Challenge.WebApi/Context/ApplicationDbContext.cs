@@ -10,15 +10,13 @@ namespace Ingaia.Challenge.WebApi.Context
         {
         }
 
-        public DbSet<CityStatisticModel> CitiesStatistics { get; set; }
+        public DbSet<CityRequestModel> CitiesStatistics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<CityStatisticModel>().HasKey(x => x.Id);
-            builder.Entity<CityStatisticModel>().ToTable("CitiesStatistics");
-
-            // Ms.Vs.Web.CodeGeneration.Design 3.1.4
-
+            builder.Entity<CityRequestModel>().HasKey(x => x.Id);
+            builder.Entity<CityRequestModel>().ToTable("CitiesRequests");
+            
             base.OnModelCreating(builder);
         }
     }

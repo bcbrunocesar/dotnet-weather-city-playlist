@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ingaia.Challenge.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200831021932_InitialCreate")]
+    [Migration("20200901020111_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace Ingaia.Challenge.WebApi.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.7");
 
-            modelBuilder.Entity("Ingaia.Challenge.WebApi.Models.CitiesStatisticsModel", b =>
+            modelBuilder.Entity("Ingaia.Challenge.WebApi.Models.CityRequestModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,7 +32,7 @@ namespace Ingaia.Challenge.WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CitiesStatistics");
+                    b.ToTable("CitiesRequests");
                 });
 #pragma warning restore 612, 618
         }

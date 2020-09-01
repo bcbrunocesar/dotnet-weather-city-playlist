@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Repositories
 {
-    public interface ICityStatisticRepository
+    public interface ICityRequestRepository
     {
-        Task<IEnumerable<CityStatisticModel>> GetAsync();
-        Task AddAsync(CityStatisticModel cityModel);
+        Task<IEnumerable<CityRequestModel>> GetAsync();
+        Task AddAsync(CityRequestModel cityModel);
     }
 }

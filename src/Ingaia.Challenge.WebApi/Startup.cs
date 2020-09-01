@@ -36,7 +36,7 @@ namespace Ingaia.Challenge.WebApi
             services.AddTransient<IWeatherForecastService, WeatherForecastService>();
             services.AddTransient<IPlaylistService, PlaylistService>();
             services.AddTransient<IAppService, AppService>();
-            services.AddTransient<ICityStatisticRepository, CityStatisticRepository>();
+            services.AddTransient<ICityRequestRepository, CityRequestRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

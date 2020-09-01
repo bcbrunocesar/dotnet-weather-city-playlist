@@ -16,7 +16,7 @@ namespace Ingaia.Challenge.WebApi.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.7");
 
-            modelBuilder.Entity("Ingaia.Challenge.WebApi.Models.CitiesStatisticsModel", b =>
+            modelBuilder.Entity("Ingaia.Challenge.WebApi.Models.CityRequestModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,7 +30,7 @@ namespace Ingaia.Challenge.WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CitiesStatistics");
+                    b.ToTable("CitiesRequests");
                 });
 #pragma warning restore 612, 618
         }

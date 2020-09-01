@@ -15,15 +15,15 @@ namespace Ingaia.Challenge.WebApi.Services
         private const string UNIT = "metric";
 
         private readonly IOptions<WeatherForecastConfig> _openWeatherMapConfig;
-        private readonly ICityStatisticRepository _cityRepository;
+        private readonly ICityRequestRepository _cityRepository;
 
-        public WeatherForecastService(IOptions<WeatherForecastConfig> openWeatherMapConfig, ICityStatisticRepository cityRepository)
+        public WeatherForecastService(IOptions<WeatherForecastConfig> openWeatherMapConfig, ICityRequestRepository cityRepository)
         {
             _openWeatherMapConfig = openWeatherMapConfig;
             _cityRepository = cityRepository;
         }
 
-        public async Task<WeatherForecastModel> GetByCity(string cityName)
+        public async Task<WeatherForecastModel> GetByCityAsync(string cityName)
         {
             var weatherForecastModel = new WeatherForecastModel();
             using (var client = new HttpClient())
@@ -33,7 +33,7 @@ namespace Ingaia.Challenge.WebApi.Services
                 var response = await client.GetAsync($"?q={cityName}&appid={_openWeatherMapConfig.Value.Token}&units={UNIT}");
                 if (response.IsSuccessStatusCode)
                 {
-                    await _cityRepository.AddAsync(new CityStatisticModel(cityName));
+                    await _cityRepository.AddAsync(new CityRequestModel(cityName));
 
                     var jsonAsString = await response.Content.ReadAsStringAsync();
                     var jsonObject = JObject.Parse(jsonAsString)["main"];

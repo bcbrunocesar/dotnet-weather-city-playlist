@@ -2,9 +2,9 @@
 
 namespace Ingaia.Challenge.WebApi.Models
 {
-    public class CityStatisticModel
+    public class CityRequestModel
     {
-        public CityStatisticModel(string cityName)
+        public CityRequestModel(string cityName)
         {
             CityName = cityName;
             RequestDate = DateTime.Now;
