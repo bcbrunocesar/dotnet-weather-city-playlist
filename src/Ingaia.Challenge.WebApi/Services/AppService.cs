@@ -1,8 +1,10 @@
-﻿using Ingaia.Challenge.WebApi.Enums;
+﻿using Ingaia.Challenge.WebApi.Constants;
+using Ingaia.Challenge.WebApi.Enums;
 using Ingaia.Challenge.WebApi.Interfaces;
 using Ingaia.Challenge.WebApi.Models;
 using Ingaia.Challenge.WebApi.Repositories;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,52 +20,74 @@ namespace Ingaia.Challenge.WebApi.Services
         private readonly IWeatherForecastService _weatherForecastService;
         private readonly ICityRequestRepository _cityRequestRepository;
         private readonly IMemoryCache _memoryCache;
+        private readonly ILogger<AppService> _logger;
 
-        public AppService(IPlaylistService playlistService, IWeatherForecastService weatherForecastService, ICityRequestRepository cityRequestRepository, IMemoryCache memoryCache)
+        public AppService(
+            IPlaylistService playlistService,
+            IWeatherForecastService weatherForecastService,
+            ICityRequestRepository cityRequestRepository,
+            IMemoryCache memoryCache,
+            ILogger<AppService> logger)
         {
             _weatherForecastService = weatherForecastService;
             _playlistService = playlistService;
             _cityRequestRepository = cityRequestRepository;
             _memoryCache = memoryCache;
+            _logger = logger;
 
             _cacheExpiryOptions = SetServiceCacheOptions();
         }
 
         public async Task<IEnumerable<CityRequestStatisticsModel>> GetRequestStatisticsAsync()
         {
-            var citiesRequests = await _cityRequestRepository.GetAsync();
-            if (!citiesRequests.Any())
+            try
             {
+                var citiesRequests = await _cityRequestRepository.GetAsync();
+                if (!citiesRequests.Any())
+                {
+                    _logger.LogInformation(LogMessages.CITY_REQUEST_NOT_FOUND);
+                    return default;
+                }
+
+                return citiesRequests
+                    .GroupBy(g => g.CityName)
+                    .Select(group => new CityRequestStatisticsModel(group.Key, group.Count()))
+                    .OrderByDescending(request => request.RequestCount)
+                    .ToList();
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error, error.Message);
                 return default;
             }
-
-            return citiesRequests
-                .GroupBy(g => g.CityName)
-                .Select(group => new CityRequestStatisticsModel(group.Key, group.Count()))
-                .OrderByDescending(request => request.RequestCount)
-                .ToList();
         }
-
-        // TODO: Retornar erro caso algum dos endpoints não respondam ou dê algum erro
 
         public async Task<IEnumerable<string>> GetWeatherPlaylistAsync(string cityName)
         {
-            if (!_memoryCache.TryGetValue(cityName, out IEnumerable<string> tracks))
+            try
             {
-                var weatherForecastNow = await _weatherForecastService.GetByCityAsync(cityName);
-                var playlistGenre = GetPlaylistGenre(weatherForecastNow.Temperature);
+                if (!_memoryCache.TryGetValue(cityName, out IEnumerable<string> tracks))
+                {
+                    var weatherForecastNow = await _weatherForecastService.GetByCityAsync(cityName);
+                    var playlistGenre = GetPlaylistGenre(weatherForecastNow.Temperature);
 
-                tracks = await _playlistService.GetPlaylistTracksAsync(playlistGenre.ToString());
+                    tracks = await _playlistService.GetPlaylistTracksAsync(playlistGenre.ToString());
 
-                SetCache(cityName, tracks, _cacheExpiryOptions);
+                    SetCache(cityName, tracks, _cacheExpiryOptions);
+                }
+
+                if (tracks.Any())
+                {
+                    await _weatherForecastService.AddAsync(cityName);
+                }
+
+                return tracks;
             }
-
-            if (tracks.Any())
+            catch (Exception error)
             {
-                await _weatherForecastService.AddAsync(cityName);
+                _logger.LogError(error, error.Message);
+                return default;
             }
-
-            return tracks;
         }
 
         private EPlaylist GetPlaylistGenre(int temperature)
