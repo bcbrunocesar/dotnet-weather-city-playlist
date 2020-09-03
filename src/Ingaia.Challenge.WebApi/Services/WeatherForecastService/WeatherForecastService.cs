@@ -1,7 +1,7 @@
 ﻿using Ingaia.Challenge.WebApi.Config;
 using Ingaia.Challenge.WebApi.Constants;
-using Ingaia.Challenge.WebApi.Interfaces;
-using Ingaia.Challenge.WebApi.Models;
+using Ingaia.Challenge.WebApi.Entities;
+using Ingaia.Challenge.WebApi.Models.Responses;
 using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,7 +10,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Ingaia.Challenge.WebApi.Services
+namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
 {
     public class WeatherForecastService : IWeatherForecastService
     {
@@ -30,11 +30,11 @@ namespace Ingaia.Challenge.WebApi.Services
             _logger = logger;
         }
 
-        public async Task<WeatherForecastModel> GetByCityAsync(string cityName)
+        public async Task<CityWeatherResponse> GetByCityAsync(string cityName)
         {
             try
             {
-                var weatherForecastModel = new WeatherForecastModel();
+                var cityWeatherResponse = new CityWeatherResponse();
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(_openWeatherMapConfig.Value.BaseEndpoint);
@@ -47,10 +47,10 @@ namespace Ingaia.Challenge.WebApi.Services
 
                     var jsonAsString = await response.Content.ReadAsStringAsync();
                     var jsonObject = JObject.Parse(jsonAsString)["main"];
-                    weatherForecastModel = jsonObject.ToObject<WeatherForecastModel>();
+                    cityWeatherResponse = jsonObject.ToObject<CityWeatherResponse>();
                 }
 
-                return weatherForecastModel;
+                return cityWeatherResponse;
             }
             catch (Exception error)
             {
@@ -63,7 +63,7 @@ namespace Ingaia.Challenge.WebApi.Services
         {
             try
             {
-                await _cityRepository.AddAsync(new CityRequestModel(cityName));
+                await _cityRepository.AddAsync(new CityRequestEntity(cityName));
             }
             catch (Exception error)
             {

@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Ingaia.Challenge.WebApi.Models
+namespace Ingaia.Challenge.WebApi.Entities
 {
-    public class CityRequestModel
+    public class CityRequestEntity
     {
-        public CityRequestModel(string cityName)
+        public CityRequestEntity(string cityName)
         {
             CityName = cityName;
             RequestDate = DateTime.Now;

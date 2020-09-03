@@ -1,5 +1,6 @@
 ﻿using Ingaia.Challenge.WebApi.Context;
-using Ingaia.Challenge.WebApi.Models;
+using Ingaia.Challenge.WebApi.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,15 +13,21 @@ namespace Ingaia.Challenge.WebApi.Repositories.UserRepository
         {
         }
 
-        public async Task AddUserAsync(UserModel userModel)
+        public async Task AddUserAsync(UserEntity userEntity)
         {
-            await _context.Users.AddAsync(userModel);
+            await _context.Users.AddAsync(userEntity);
             await _context.SaveChangesAsync();
         }
 
-        public UserModel GetAsync(string userName, string password)
+        public async Task<UserEntity> GetAsync(string userName)
         {
-            return _context.Users.FirstOrDefault(x => x.Username.Equals(userName) && x.Password.Equals(password));
+            var user = await _context
+                .Users
+                .AsNoTracking()
+                .Where(x => x.Username.ToLower().Equals(userName.ToLower()))
+                .FirstOrDefaultAsync();
+
+            return user;
         }
     }
 }

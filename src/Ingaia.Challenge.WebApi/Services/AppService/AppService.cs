@@ -1,8 +1,9 @@
 ﻿using Ingaia.Challenge.WebApi.Constants;
 using Ingaia.Challenge.WebApi.Enums;
-using Ingaia.Challenge.WebApi.Interfaces;
-using Ingaia.Challenge.WebApi.Models;
+using Ingaia.Challenge.WebApi.Models.Responses;
 using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
+using Ingaia.Challenge.WebApi.Services.PlaylistService;
+using Ingaia.Challenge.WebApi.Services.WeatherForecastService;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ingaia.Challenge.WebApi.Services
+namespace Ingaia.Challenge.WebApi.Services.AppService
 {
     public class AppService : IAppService
     {
@@ -38,7 +39,7 @@ namespace Ingaia.Challenge.WebApi.Services
             _cacheExpiryOptions = SetServiceCacheOptions();
         }
 
-        public async Task<IEnumerable<CityRequestStatisticsModel>> GetRequestStatisticsAsync()
+        public async Task<IEnumerable<CityRequestStatisticsResponse>> GetRequestStatisticsAsync()
         {
             try
             {
@@ -51,7 +52,7 @@ namespace Ingaia.Challenge.WebApi.Services
 
                 return citiesRequests
                     .GroupBy(g => g.CityName)
-                    .Select(group => new CityRequestStatisticsModel(group.Key, group.Count()))
+                    .Select(group => new CityRequestStatisticsResponse(group.Key, group.Count()))
                     .OrderByDescending(request => request.RequestCount)
                     .ToList();
             }

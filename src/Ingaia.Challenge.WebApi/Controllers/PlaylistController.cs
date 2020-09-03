@@ -1,4 +1,4 @@
-﻿using Ingaia.Challenge.WebApi.Interfaces;
+﻿using Ingaia.Challenge.WebApi.Services.AppService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
-﻿using Ingaia.Challenge.WebApi.Models;
-using Ingaia.Challenge.WebApi.Repositories.UserRepository;
+﻿using Ingaia.Challenge.WebApi.Models.Commands;
+using Ingaia.Challenge.WebApi.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -8,24 +8,18 @@ namespace Ingaia.Challenge.WebApi.Controllers
     [Route("api/v1/users")]
     public class UserController : Controller
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;       
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Index([FromBody] RegisterUserModel registerUserModel)
+        public async Task<IActionResult> AddUser([FromBody] RegisterUserCommand command)
         {
-            if (registerUserModel == null)
-            {
-                return BadRequest();
-            }
-
-            var userModel = new UserModel(registerUserModel.Username, registerUserModel.Password);
-            await _userRepository.AddUserAsync(userModel);
+            await _userService.AddUserAsync(command);
 
             return Ok(new
             {

@@ -1,5 +1,4 @@
-﻿using Ingaia.Challenge.WebApi.Interfaces;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Ingaia.Challenge.WebApi.Config;
 using Microsoft.Extensions.Options;
 using SpotifyAPI.Web;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Ingaia.Challenge.WebApi.Constants;
 using System;
 
-namespace Ingaia.Challenge.WebApi.Services
+namespace Ingaia.Challenge.WebApi.Services.PlaylistService
 {
     public class PlaylistService : IPlaylistService
     {

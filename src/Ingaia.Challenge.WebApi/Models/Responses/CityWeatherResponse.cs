@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Ingaia.Challenge.WebApi.Models
+namespace Ingaia.Challenge.WebApi.Models.Responses
 {
-    public class WeatherForecastModel
+    public class CityWeatherResponse
     {
         [JsonProperty("temp")]
         public int Temperature { get; set; }

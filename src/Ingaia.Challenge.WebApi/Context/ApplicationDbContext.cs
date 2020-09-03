@@ -1,4 +1,4 @@
-﻿using Ingaia.Challenge.WebApi.Models;
+﻿using Ingaia.Challenge.WebApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ingaia.Challenge.WebApi.Context
@@ -10,15 +10,15 @@ namespace Ingaia.Challenge.WebApi.Context
         {
         }
 
-        public DbSet<UserModel> Users { get; set; }
-        public DbSet<CityRequestModel> CitiesRequests { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<CityRequestEntity> CitiesRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<CityRequestModel>().HasKey(x => x.Id);
-            builder.Entity<CityRequestModel>().ToTable("CitiesRequests");
+            builder.Entity<CityRequestEntity>().HasKey(x => x.Id);
+            builder.Entity<CityRequestEntity>().ToTable("CitiesRequests");
 
-            builder.Entity<UserModel>().HasKey(x => x.Id);
+            builder.Entity<UserEntity>().HasKey(x => x.Id);
 
             base.OnModelCreating(builder);
         }

@@ -1,38 +1,27 @@
-﻿using Ingaia.Challenge.WebApi.Interfaces;
-using Ingaia.Challenge.WebApi.Models;
-using Ingaia.Challenge.WebApi.Repositories.UserRepository;
+﻿using Ingaia.Challenge.WebApi.Models.Commands;
+using Ingaia.Challenge.WebApi.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Controllers
 {
     [Route("api/v1/authenticate")]
     public class AuthenticationController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ITokenService _tokenService;
+        private readonly IUserService _userService;
 
-        public AuthenticationController(IUserRepository userRepository, ITokenService tokenService)
+        public AuthenticationController(IUserService userService)
         {
-            _userRepository = userRepository;
-            _tokenService = tokenService;
+            _userService = userService;
         }
 
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public IActionResult Authenticate([FromBody] AuthenticateModel authenticateModel)
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateCommand command)
         {
-            var user = _userRepository.GetAsync(authenticateModel.Username, authenticateModel.Password);
-            if (user == null)
-            {
-                return NotFound(new
-                {
-                    message = "User or password invalid"
-                });
-            }
-
-            var token = _tokenService.GenerateToken(user);
+            var token = await _userService.AuthenticateAsync(command);
             return Ok(new
             {
                 token

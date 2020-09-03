@@ -1,11 +1,10 @@
-﻿namespace Ingaia.Challenge.WebApi.Models
+﻿namespace Ingaia.Challenge.WebApi.Entities
 {
-    public class UserModel
+    public class UserEntity
     {
-        public UserModel(string username, string password)
+        public UserEntity(string username)
         {
             Username = username;
-            Password = password;
             Role = "regular";
         }
 

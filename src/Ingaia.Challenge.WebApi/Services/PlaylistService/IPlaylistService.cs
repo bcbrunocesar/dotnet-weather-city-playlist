@@ -1,8 +1,7 @@
-﻿using Ingaia.Challenge.WebApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ingaia.Challenge.WebApi.Interfaces
+namespace Ingaia.Challenge.WebApi.Services.PlaylistService
 {
     public interface IPlaylistService
     {

@@ -1,11 +1,11 @@
-﻿using Ingaia.Challenge.WebApi.Models;
+﻿using Ingaia.Challenge.WebApi.Entities;
 using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Repositories.UserRepository
 {
     public interface IUserRepository
     {
-        Task AddUserAsync(UserModel userModel);
-        UserModel GetAsync(string userName, string password);
+        Task AddUserAsync(UserEntity userEntity);
+        Task<UserEntity> GetAsync(string userName);
     }
 }

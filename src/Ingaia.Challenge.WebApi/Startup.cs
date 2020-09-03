@@ -1,9 +1,7 @@
 using Ingaia.Challenge.WebApi.Config;
 using Ingaia.Challenge.WebApi.Context;
-using Ingaia.Challenge.WebApi.Interfaces;
 using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Ingaia.Challenge.WebApi.Repositories.UserRepository;
-using Ingaia.Challenge.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +12,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Ingaia.Challenge.WebApi.Services.WeatherForecastService;
+using Ingaia.Challenge.WebApi.Services.UserService;
+using Ingaia.Challenge.WebApi.Services.PlaylistService;
+using Ingaia.Challenge.WebApi.Services.AppService;
 
 namespace Ingaia.Challenge.WebApi
 {
@@ -100,9 +102,9 @@ namespace Ingaia.Challenge.WebApi
 
         private void InitializeDI(IServiceCollection services)
         {
-            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IWeatherForecastService, WeatherForecastService>();
             services.AddTransient<IPlaylistService, PlaylistService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IAppService, AppService>();
             services.AddTransient<ICityRequestRepository, CityRequestRepository>();
             services.AddTransient<IUserRepository, UserRepository>();

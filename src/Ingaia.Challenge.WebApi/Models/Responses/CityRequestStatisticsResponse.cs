@@ -1,8 +1,8 @@
-﻿namespace Ingaia.Challenge.WebApi.Models
+﻿namespace Ingaia.Challenge.WebApi.Models.Responses
 {
-    public class CityRequestStatisticsModel
+    public class CityRequestStatisticsResponse
     {
-        public CityRequestStatisticsModel(string cityName, int requestCount)
+        public CityRequestStatisticsResponse(string cityName, int requestCount)
         {
             CityName = cityName;
             RequestCount = requestCount;
