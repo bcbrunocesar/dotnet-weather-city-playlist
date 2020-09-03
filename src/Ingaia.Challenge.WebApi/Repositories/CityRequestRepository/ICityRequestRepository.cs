@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ingaia.Challenge.WebApi.Repositories
+namespace Ingaia.Challenge.WebApi.Repositories.CityRequestRepository
 {
     public interface ICityRequestRepository
     {
         Task<IEnumerable<CityRequestModel>> GetAsync();
-        Task AddAsync(CityRequestModel cityModel);
+        Task AddAsync(CityRequestModel cityRequestModel);
     }
 }

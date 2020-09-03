@@ -1,20 +1,22 @@
 ﻿using Ingaia.Challenge.WebApi.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Controllers
-{    
-    public class PlaylistsController : ControllerBase
+{
+    [Authorize]
+    [Route("api/v1/weather-playlist")]
+    public class PlaylistController : ControllerBase
     {
         private readonly IAppService _appService;
 
-        public PlaylistsController(IAppService appService)
+        public PlaylistController(IAppService appService)
         {
             _appService = appService;
         }
 
-        [HttpGet]
-        [Route("api/v1/weather-playlist")]
+        [HttpGet]        
         public async Task<IActionResult> Get()
         {
             var citiesRequests = await _appService.GetRequestStatisticsAsync();
@@ -22,7 +24,7 @@ namespace Ingaia.Challenge.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/v1/weather-playlist/{cityName}")]
+        [Route("{cityName}")]
         public async Task<IActionResult> Get(string cityName)
         {
             if (string.IsNullOrEmpty(cityName))

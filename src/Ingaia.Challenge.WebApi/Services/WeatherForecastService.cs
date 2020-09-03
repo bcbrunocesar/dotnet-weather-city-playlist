@@ -2,7 +2,7 @@
 using Ingaia.Challenge.WebApi.Constants;
 using Ingaia.Challenge.WebApi.Interfaces;
 using Ingaia.Challenge.WebApi.Models;
-using Ingaia.Challenge.WebApi.Repositories;
+using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -20,7 +20,10 @@ namespace Ingaia.Challenge.WebApi.Services
         private readonly ICityRequestRepository _cityRepository;
         private readonly ILogger<WeatherForecastService> _logger;
 
-        public WeatherForecastService(IOptions<WeatherForecastConfig> openWeatherMapConfig, ICityRequestRepository cityRepository, ILogger<WeatherForecastService> logger)
+        public WeatherForecastService(
+            IOptions<WeatherForecastConfig> openWeatherMapConfig, 
+            ICityRequestRepository cityRepository, 
+            ILogger<WeatherForecastService> logger)
         {
             _openWeatherMapConfig = openWeatherMapConfig;
             _cityRepository = cityRepository;

@@ -2,7 +2,7 @@
 using Ingaia.Challenge.WebApi.Enums;
 using Ingaia.Challenge.WebApi.Interfaces;
 using Ingaia.Challenge.WebApi.Models;
-using Ingaia.Challenge.WebApi.Repositories;
+using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;

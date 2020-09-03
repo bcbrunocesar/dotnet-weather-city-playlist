@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ingaia.Challenge.WebApi.Repositories
+namespace Ingaia.Challenge.WebApi.Repositories.CityRequestRepository
 {
     public class CityRequestRepository : BaseRepository, ICityRequestRepository
     {
@@ -13,15 +13,15 @@ namespace Ingaia.Challenge.WebApi.Repositories
         {
         }
 
-        public async Task AddAsync(CityRequestModel cityModel)
+        public async Task AddAsync(CityRequestModel cityRequestModel)
         {
-            await _context.AddAsync(cityModel);
+            await _context.CitiesRequests.AddAsync(cityRequestModel);
             await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<CityRequestModel>> GetAsync()
         {
-            return await _context.CitiesStatistics.ToListAsync();
+            return await _context.CitiesRequests.ToListAsync();
         }
     }
 }
