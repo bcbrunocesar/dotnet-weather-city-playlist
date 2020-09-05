@@ -1,8 +1,12 @@
 ﻿using Ingaia.Challenge.WebApi.Config;
+using Ingaia.Challenge.WebApi.Constants;
 using Ingaia.Challenge.WebApi.Entities;
+using Ingaia.Challenge.WebApi.Infrastructure.Enums;
+using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
 using Ingaia.Challenge.WebApi.Models.Commands;
 using Ingaia.Challenge.WebApi.Repositories.UserRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,17 +19,26 @@ namespace Ingaia.Challenge.WebApi.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly IOptions<AuthConfig> _authConfig;
         private readonly IUserRepository _userRepository;
+        private readonly INotificator _notificator;
+        private readonly IOptions<AuthConfig> _authConfig;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IOptions<AuthConfig> authConfig, IUserRepository userRepository)
+        public UserService(
+            IUserRepository userRepository,
+            INotificator notificator,
+            IOptions<AuthConfig> authConfig,
+            ILogger<UserService> logger)
         {
             _authConfig = authConfig;
             _userRepository = userRepository;
+            _notificator = notificator;
+            _logger = logger;
         }
 
         public async Task AddUserAsync(RegisterUserCommand command)
         {
+            // TODO: Validate
             var user = new UserEntity(command.Username);
             user.Password = HashPassword(user, command.Password);
 
@@ -35,23 +48,23 @@ namespace Ingaia.Challenge.WebApi.Services.UserService
         public async Task<string> AuthenticateAsync(AuthenticateCommand command)
         {
             var user = await _userRepository.GetAsync(command.Username);
-            if (user == null)
+            if (user is null)
             {
-                // User not found
+                _notificator.Handle("User not found.", ENotificationType.NotFound);
+                _logger.LogInformation(LogMessagesConstant.USER_NOT_FOUND);
+
+                return default;
             }
 
             if (!VerifiyUserPassword(user, command.Password))
             {
-                // User or password invalid.
+                _notificator.Handle("User or password invalid.", ENotificationType.Business);
+                _logger.LogInformation(LogMessagesConstant.USER_PASSWORD_INVALID);
+
+                return default;
             }
 
-            var token = GenerateToken(user);
-            return token;
-        }
-
-        public Task<UserEntity> GetAsync(string userName)
-        {
-            return _userRepository.GetAsync(userName);
+            return GenerateToken(user);
         }
 
         private string GenerateToken(UserEntity user)

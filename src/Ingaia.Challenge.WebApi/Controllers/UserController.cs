@@ -1,4 +1,5 @@
-﻿using Ingaia.Challenge.WebApi.Models.Commands;
+﻿using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
+using Ingaia.Challenge.WebApi.Models.Commands;
 using Ingaia.Challenge.WebApi.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -6,13 +7,14 @@ using System.Threading.Tasks;
 namespace Ingaia.Challenge.WebApi.Controllers
 {
     [Route("api/v1/users")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(INotificator notificator, IUserService userService)
+            : base(notificator)
         {
-            _userService = userService;       
+            _userService = userService;
         }
 
         [HttpPost]

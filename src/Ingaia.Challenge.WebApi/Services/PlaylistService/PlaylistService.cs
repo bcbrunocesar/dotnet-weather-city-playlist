@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Ingaia.Challenge.WebApi.Constants;
 using System;
+using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
+using Ingaia.Challenge.WebApi.Infrastructure.Enums;
 
 namespace Ingaia.Challenge.WebApi.Services.PlaylistService
 {
@@ -13,12 +15,19 @@ namespace Ingaia.Challenge.WebApi.Services.PlaylistService
     {
         private readonly IOptions<PlaylistConfig> _playlistConfig;
         private readonly ILogger<PlaylistService> _logger;
-        private readonly SpotifyClient _spotifyClient;        
+        private readonly INotificator _notificator;
+        private readonly SpotifyClient _spotifyClient;
 
-        public PlaylistService(IOptions<PlaylistConfig> playlistConfig, ILogger<PlaylistService> logger)
+        public PlaylistService
+        (
+            IOptions<PlaylistConfig> playlistConfig,
+            ILogger<PlaylistService> logger,
+            INotificator notificator
+        )
         {
             _playlistConfig = playlistConfig;
             _logger = logger;
+            _notificator = notificator;
 
             _spotifyClient = CreateSpotifyInstance();
         }
@@ -27,43 +36,55 @@ namespace Ingaia.Challenge.WebApi.Services.PlaylistService
         {
             try
             {
-                var tracks = new List<string>();
                 var playlistSearch = await SearchPlaylistByGenre(genre);
-                if (playlistSearch == null)
+                if (playlistSearch is null)
                 {
-                    _logger.LogInformation(string.Format(LogMessages.PLAYLIST_GENRE_NOT_FOUND, genre));
-                    return tracks;
+                    _notificator.Handle("Playlist não encontrada.", ENotificationType.NotFound);
+                    _logger.LogInformation(LogMessagesConstant.PLAYLIST_GENRE_NOT_FOUND, genre);
+
+                    return default;
                 }
 
                 var playlist = await GetPlaylistById(playlistSearch.Id);
-                if (playlist == null)
+                if (playlist is null)
                 {
-                    _logger.LogInformation(string.Format(LogMessages.PLAYLIST_NOT_FOUND, playlistSearch.Id));
-                    return tracks;
+                    _notificator.Handle("Ocorreu um erro ao buscar a playlist no serviço de streaming.", ENotificationType.Failed);
+                    _logger.LogInformation(LogMessagesConstant.PLAYLIST_NOT_FOUND, playlistSearch.Id);
+
+                    return default;
                 }
 
-                foreach (var item in playlist.Tracks.Items)
-                {
-                    var fullTrack = (FullTrack)item.Track;
-                    tracks.Add(fullTrack.Name);
-                }
-
-                return tracks;
+                return GetTracksName(playlist.Tracks.Items);
             }
             catch (Exception error)
             {
+                _notificator.Handle(error.Message, ENotificationType.Failed);
                 _logger.LogError(error, error.Message);
+
                 return default;
             }
+        }
+
+        private IEnumerable<string> GetTracksName(List<PlaylistTrack<IPlayableItem>> playlistTracks)
+        {
+            var tracks = new List<string>();
+
+            foreach (var item in playlistTracks)
+            {
+                var fullTrack = (FullTrack)item.Track;
+                tracks.Add(fullTrack.Name);
+            }
+
+            return tracks;
         }
 
         private async Task<SimplePlaylist> SearchPlaylistByGenre(string genre)
         {
             var searchRequest = new SearchRequest(SearchRequest.Types.Playlist, genre);
-            var playlist = await _spotifyClient.Search.Item(searchRequest);
+            var spotifyClient = await _spotifyClient.Search.Item(searchRequest);
 
-            return playlist.Playlists.Items.Count > 0
-                ? playlist.Playlists.Items[0]
+            return spotifyClient.Playlists.Items.Count > 0
+                ? spotifyClient.Playlists.Items[0]
                 : default;
         }
 
@@ -75,10 +96,10 @@ namespace Ingaia.Challenge.WebApi.Services.PlaylistService
         private SpotifyClient CreateSpotifyInstance()
         {
             var config = SpotifyClientConfig
-             .CreateDefault()
-             .WithAuthenticator(new ClientCredentialsAuthenticator(
-                 _playlistConfig.Value.ClientId,
-                 _playlistConfig.Value.SecretKey));
+                .CreateDefault()
+                .WithAuthenticator(new ClientCredentialsAuthenticator(
+                     _playlistConfig.Value.ClientId,
+                     _playlistConfig.Value.SecretKey));
 
             return new SpotifyClient(config);
         }

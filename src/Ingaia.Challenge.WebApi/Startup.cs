@@ -16,6 +16,7 @@ using Ingaia.Challenge.WebApi.Services.WeatherForecastService;
 using Ingaia.Challenge.WebApi.Services.UserService;
 using Ingaia.Challenge.WebApi.Services.PlaylistService;
 using Ingaia.Challenge.WebApi.Services.AppService;
+using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
 
 namespace Ingaia.Challenge.WebApi
 {
@@ -55,6 +56,13 @@ namespace Ingaia.Challenge.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(x =>
+            {
+                x.AllowAnyHeader();
+                x.AllowAnyMethod();
+                x.AllowAnyOrigin();
+            });
 
             app.UseHttpsRedirection();
             app.UseResponseCaching();
@@ -108,6 +116,8 @@ namespace Ingaia.Challenge.WebApi
             services.AddTransient<IAppService, AppService>();
             services.AddTransient<ICityRequestRepository, CityRequestRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<INotificator, Notificator>();
+
         }
 
         private void InitializeConfigModels(IServiceCollection services)

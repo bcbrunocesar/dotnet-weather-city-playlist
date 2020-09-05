@@ -1,5 +1,6 @@
-﻿using Ingaia.Challenge.WebApi.Constants;
-using Ingaia.Challenge.WebApi.Enums;
+﻿using Ingaia.Challenge.WebApi.Enums;
+using Ingaia.Challenge.WebApi.Infrastructure.Enums;
+using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
 using Ingaia.Challenge.WebApi.Models.Responses;
 using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Ingaia.Challenge.WebApi.Services.PlaylistService;
@@ -15,12 +16,13 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
 {
     public class AppService : IAppService
     {
-        private MemoryCacheEntryOptions _cacheExpiryOptions;
+        private readonly MemoryCacheEntryOptions _cacheExpiryOptions;
 
         private readonly IPlaylistService _playlistService;
         private readonly IWeatherForecastService _weatherForecastService;
         private readonly ICityRequestRepository _cityRequestRepository;
         private readonly IMemoryCache _memoryCache;
+        private readonly INotificator _notificator;
         private readonly ILogger<AppService> _logger;
 
         public AppService(
@@ -28,15 +30,17 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             IWeatherForecastService weatherForecastService,
             ICityRequestRepository cityRequestRepository,
             IMemoryCache memoryCache,
+            INotificator notificator,
             ILogger<AppService> logger)
         {
             _weatherForecastService = weatherForecastService;
             _playlistService = playlistService;
             _cityRequestRepository = cityRequestRepository;
             _memoryCache = memoryCache;
+            _notificator = notificator;
             _logger = logger;
 
-            _cacheExpiryOptions = SetServiceCacheOptions();
+            _cacheExpiryOptions = SetMemoryCacheOptions();
         }
 
         public async Task<IEnumerable<CityRequestStatisticsResponse>> GetRequestStatisticsAsync()
@@ -44,11 +48,7 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             try
             {
                 var citiesRequests = await _cityRequestRepository.GetAsync();
-                if (!citiesRequests.Any())
-                {
-                    _logger.LogInformation(LogMessages.CITY_REQUEST_NOT_FOUND);
-                    return default;
-                }
+                if (!citiesRequests.Any()) return default;
 
                 return citiesRequests
                     .GroupBy(g => g.CityName)
@@ -58,7 +58,9 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             }
             catch (Exception error)
             {
+                _notificator.Handle(error.Message, ENotificationType.Failed);
                 _logger.LogError(error, error.Message);
+
                 return default;
             }
         }
@@ -69,12 +71,19 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             {
                 if (!_memoryCache.TryGetValue(cityName, out IEnumerable<string> tracks))
                 {
-                    var weatherForecastNow = await _weatherForecastService.GetByCityAsync(cityName);
-                    var playlistGenre = GetPlaylistGenre(weatherForecastNow.Temperature);
+                    var cityWeatherNow = await _weatherForecastService.GetByCityAsync(cityName);
+                    if (cityWeatherNow is null) 
+                    {
+                        _notificator.Handle("Cidade não encontrada");
+                        _logger.LogInformation("Cidade {cityName} não encontrada.", cityName);
 
+                        return default;
+                    }
+
+                    var playlistGenre = GetPlaylistGenre(cityWeatherNow.Temperature);
                     tracks = await _playlistService.GetPlaylistTracksAsync(playlistGenre.ToString());
 
-                    SetCache(cityName, tracks, _cacheExpiryOptions);
+                    SetMemoryCache(cityName, tracks, _cacheExpiryOptions);
                 }
 
                 if (tracks.Any())
@@ -86,7 +95,9 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             }
             catch (Exception error)
             {
+                _notificator.Handle(error.Message, ENotificationType.Failed);
                 _logger.LogError(error, error.Message);
+
                 return default;
             }
         }
@@ -105,7 +116,7 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             return EPlaylist.Pop;
         }
 
-        private MemoryCacheEntryOptions SetServiceCacheOptions()
+        private MemoryCacheEntryOptions SetMemoryCacheOptions()
         {
             return new MemoryCacheEntryOptions
             {
@@ -115,7 +126,7 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             };
         }
 
-        private void SetCache(string key, object value, MemoryCacheEntryOptions options)
+        private void SetMemoryCache(string key, object value, MemoryCacheEntryOptions options)
         {
             _memoryCache.Set(key, value, options);
         }

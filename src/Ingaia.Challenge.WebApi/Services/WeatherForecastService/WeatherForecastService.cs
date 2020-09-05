@@ -41,8 +41,9 @@ namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
 
                     var response = await client.GetAsync($"?q={cityName}&appid={_openWeatherMapConfig.Value.Token}&units={UNIT}");
                     if (!response.IsSuccessStatusCode)
-                    {
-                        _logger.LogWarning(string.Format(LogMessages.CITY_WEATHER_NOT_FOUND, cityName));
+                    {                        
+                        _logger.LogWarning(string.Format(LogMessagesConstant.CITY_WEATHER_NOT_FOUND, cityName));
+                        return null;
                     }
 
                     var jsonAsString = await response.Content.ReadAsStringAsync();
@@ -55,7 +56,7 @@ namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
             catch (Exception error)
             {
                 _logger.LogError(error, error.Message);
-                return default;
+                return null;
             }
         }
 
