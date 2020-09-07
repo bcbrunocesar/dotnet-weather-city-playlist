@@ -57,6 +57,8 @@ namespace Ingaia.Challenge.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            InitializeDatabase(app);
+
             app.UseCors(x =>
             {
                 x.AllowAnyHeader();
@@ -106,6 +108,14 @@ namespace Ingaia.Challenge.WebApi
                         ValidateAudience = false
                     };
                 });
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            context.Database.Migrate();
         }
 
         private void InitializeDI(IServiceCollection services)

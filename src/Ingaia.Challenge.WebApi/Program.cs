@@ -1,4 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace Ingaia.Challenge.WebApi
@@ -12,9 +14,16 @@ namespace Ingaia.Challenge.WebApi
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .ConfigureAppConfiguration((webBuilder, config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: false);
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                var port = Environment.GetEnvironmentVariable("PORT");
+
+                webBuilder.UseStartup<Startup>()
+                    .UseUrls($"http://*:{port}");
+            });
     }
 }

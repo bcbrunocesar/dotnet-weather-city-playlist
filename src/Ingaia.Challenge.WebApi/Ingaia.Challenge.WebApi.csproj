@@ -1,11 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <UserSecretsId>18850056-3099-48af-b214-06a1d1b6f090</UserSecretsId>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
@@ -24,5 +26,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1" />
   </ItemGroup>
 
-
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
 </Project>
