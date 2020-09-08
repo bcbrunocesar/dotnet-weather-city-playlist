@@ -29,7 +29,7 @@ namespace Ingaia.Challenge.WebApi.Infrastructure.Notificator
 
         public bool HasNotification()
         {
-            return _notifications.Any();
+            return _notifications.Any(x => x.NotificationType != ENotificationType.Success);
         }
 
         public void Handle(string message, ENotificationType notificationType = ENotificationType.Business)
@@ -40,6 +40,15 @@ namespace Ingaia.Challenge.WebApi.Infrastructure.Notificator
         public IReadOnlyList<NotificationModel> GetNotifications()
         {
             return _notifications;
+        }
+
+        public string GetSuccessNotification()
+        {
+            var notifications = _notifications.Where(x => x.NotificationType == ENotificationType.Success);
+
+            return notifications.Any()
+                ? notifications.FirstOrDefault().Message
+                : default;
         }
 
         public IEnumerable<string> GetMessages()

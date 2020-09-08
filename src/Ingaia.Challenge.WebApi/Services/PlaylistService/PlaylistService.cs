@@ -4,10 +4,11 @@ using Microsoft.Extensions.Options;
 using SpotifyAPI.Web;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Ingaia.Challenge.WebApi.Constants;
 using System;
 using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
 using Ingaia.Challenge.WebApi.Infrastructure.Enums;
+using Ingaia.Challenge.WebApi.Constants.Logs;
+using Ingaia.Challenge.WebApi.Constants.Validations;
 
 namespace Ingaia.Challenge.WebApi.Services.PlaylistService
 {
@@ -39,8 +40,8 @@ namespace Ingaia.Challenge.WebApi.Services.PlaylistService
                 var playlistSearch = await SearchPlaylistByGenre(genre);
                 if (playlistSearch is null)
                 {
-                    _notificator.Handle("Playlist não encontrada.", ENotificationType.NotFound);
-                    _logger.LogInformation(LogMessagesConstant.PLAYLIST_GENRE_NOT_FOUND, genre);
+                    _notificator.Handle(PlaylistConstants.GENRE_NOT_FOUND, ENotificationType.NotFound);
+                    _logger.LogInformation(PlaylistLogConstants.GENRE_NOT_FOUND, genre);
 
                     return default;
                 }
@@ -48,8 +49,8 @@ namespace Ingaia.Challenge.WebApi.Services.PlaylistService
                 var playlist = await GetPlaylistById(playlistSearch.Id);
                 if (playlist is null)
                 {
-                    _notificator.Handle("Ocorreu um erro ao buscar a playlist no serviço de streaming.", ENotificationType.Failed);
-                    _logger.LogInformation(LogMessagesConstant.PLAYLIST_NOT_FOUND, playlistSearch.Id);
+                    _notificator.Handle(PlaylistConstants.STREAMING_SEARCH_ERROR, ENotificationType.Failed);
+                    _logger.LogInformation(PlaylistLogConstants.STREAMING_SEARCH_ERROR, playlistSearch.Id);
 
                     return default;
                 }

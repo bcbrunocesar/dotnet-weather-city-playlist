@@ -15,10 +15,16 @@ namespace Ingaia.Challenge.WebApi.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<CityRequestEntity>().HasKey(x => x.Id);
-            builder.Entity<CityRequestEntity>().ToTable("CitiesRequests");
+            var userEntityConfig = builder.Entity<UserEntity>();
+            var cityRequestEntityConfig = builder.Entity<CityRequestEntity>();
 
-            builder.Entity<UserEntity>().HasKey(x => x.Id);
+            cityRequestEntityConfig.HasKey(x => x.Id);
+            cityRequestEntityConfig.Ignore(x => x.ValidationResult);
+            cityRequestEntityConfig.ToTable("CitiesRequests");
+
+            userEntityConfig.HasKey(x => x.Id);
+            userEntityConfig.Ignore(x => x.ValidationResult);
+            userEntityConfig.ToTable("Users");
 
             base.OnModelCreating(builder);
         }

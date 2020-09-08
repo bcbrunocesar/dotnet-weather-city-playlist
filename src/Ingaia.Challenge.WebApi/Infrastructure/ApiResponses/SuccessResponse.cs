@@ -2,12 +2,14 @@
 {
     public class SuccessResponse : BaseResponse
     {
-        public SuccessResponse(object data)
+        public SuccessResponse(object data, string message)
             : base(200)
         {
             Data = data;
+            Message = message;
         }
-
-        public object Data { get; set; }
+        
+        public object Data { get; set; }        
+        public string Message { get; set; }
     }
 }

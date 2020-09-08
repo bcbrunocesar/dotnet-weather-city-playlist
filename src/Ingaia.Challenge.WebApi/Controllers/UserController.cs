@@ -1,4 +1,5 @@
-﻿using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
+﻿using Ingaia.Challenge.WebApi.Infrastructure.ApiResponses;
+using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
 using Ingaia.Challenge.WebApi.Models.Commands;
 using Ingaia.Challenge.WebApi.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,13 @@ namespace Ingaia.Challenge.WebApi.Controllers
 
         [HttpPost]
         [Route("")]
+        [ProducesResponseType(typeof(SuccessResponse), 200)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        [ProducesErrorResponseType(typeof(ErrorResponse))]
         public async Task<IActionResult> AddUser([FromBody] RegisterUserCommand command)
         {
             await _userService.AddUserAsync(command);
-
-            return Ok(new
-            {
-                message = "Usuário inserido!"
-            });
+            return CustomResponse();
         }
     }
 }

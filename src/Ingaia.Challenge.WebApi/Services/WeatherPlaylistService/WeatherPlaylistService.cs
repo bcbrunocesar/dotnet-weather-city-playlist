@@ -1,6 +1,9 @@
-﻿using Ingaia.Challenge.WebApi.Enums;
+﻿using Ingaia.Challenge.WebApi.Constants.Logs;
+using Ingaia.Challenge.WebApi.Constants.Validations;
+using Ingaia.Challenge.WebApi.Enums;
 using Ingaia.Challenge.WebApi.Infrastructure.Enums;
 using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
+using Ingaia.Challenge.WebApi.Models.Commands;
 using Ingaia.Challenge.WebApi.Models.Responses;
 using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Ingaia.Challenge.WebApi.Services.PlaylistService;
@@ -14,24 +17,24 @@ using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Services.AppService
 {
-    public class AppService : IAppService
+    public class WeatherPlaylistService : IWeatherPlaylistService
     {
         private readonly MemoryCacheEntryOptions _cacheExpiryOptions;
 
         private readonly IPlaylistService _playlistService;
-        private readonly IWeatherForecastService _weatherForecastService;
+        private readonly ICityWeatherService _weatherForecastService;
         private readonly ICityRequestRepository _cityRequestRepository;
         private readonly IMemoryCache _memoryCache;
         private readonly INotificator _notificator;
-        private readonly ILogger<AppService> _logger;
+        private readonly ILogger<WeatherPlaylistService> _logger;
 
-        public AppService(
+        public WeatherPlaylistService(
             IPlaylistService playlistService,
-            IWeatherForecastService weatherForecastService,
+            ICityWeatherService weatherForecastService,
             ICityRequestRepository cityRequestRepository,
             IMemoryCache memoryCache,
             INotificator notificator,
-            ILogger<AppService> logger)
+            ILogger<WeatherPlaylistService> logger)
         {
             _weatherForecastService = weatherForecastService;
             _playlistService = playlistService;
@@ -48,7 +51,13 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             try
             {
                 var citiesRequests = await _cityRequestRepository.GetAsync();
-                if (!citiesRequests.Any()) return default;
+                if (!citiesRequests.Any())
+                {
+                    _notificator.Handle(WeatherPlaylistConstants.NOT_FOUND);
+                    _logger.LogInformation(WeatherPlaylistLogConstants.NOT_FOUND);
+
+                    return default;
+                }
 
                 return citiesRequests
                     .GroupBy(g => g.CityName)
@@ -74,8 +83,8 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
                     var cityWeatherNow = await _weatherForecastService.GetByCityAsync(cityName);
                     if (cityWeatherNow is null) 
                     {
-                        _notificator.Handle("Cidade não encontrada");
-                        _logger.LogInformation("Cidade {cityName} não encontrada.", cityName);
+                        _notificator.Handle(WeatherPlaylistConstants.CITY_NOT_FOUND);
+                        _logger.LogInformation(WeatherPlaylistLogConstants.CITY_NOT_FOUND, cityName);
 
                         return default;
                     }
@@ -88,7 +97,7 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
 
                 if (tracks.Any())
                 {
-                    await _weatherForecastService.AddAsync(cityName);
+                    await _weatherForecastService.AddAsync(new AddCityRequestCommand(cityName));
                 }
 
                 return tracks;

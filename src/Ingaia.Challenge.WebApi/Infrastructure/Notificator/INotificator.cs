@@ -10,5 +10,6 @@ namespace Ingaia.Challenge.WebApi.Infrastructure.Notificator
         void Handle(string message, ENotificationType notificationType = ENotificationType.Business);
         IReadOnlyList<NotificationModel> GetNotifications();
         IEnumerable<string> GetMessages();
+        string GetSuccessNotification();
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Ingaia.Challenge.WebApi.Config;
-using Ingaia.Challenge.WebApi.Constants;
+using Ingaia.Challenge.WebApi.Constants.Logs;
+using Ingaia.Challenge.WebApi.Constants.Validations;
 using Ingaia.Challenge.WebApi.Entities;
+using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
+using Ingaia.Challenge.WebApi.Models.Commands;
 using Ingaia.Challenge.WebApi.Models.Responses;
 using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Microsoft.Extensions.Logging;
@@ -12,22 +15,25 @@ using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
 {
-    public class WeatherForecastService : IWeatherForecastService
+    public class CityWeatherService : ICityWeatherService
     {
         private const string UNIT = "metric";
 
-        private readonly IOptions<WeatherForecastConfig> _openWeatherMapConfig;
         private readonly ICityRequestRepository _cityRepository;
-        private readonly ILogger<WeatherForecastService> _logger;
+        private readonly IOptions<WeatherForecastConfig> _openWeatherMapConfig;
+        private readonly ILogger<CityWeatherService> _logger;
+        private readonly INotificator _notificator;
 
-        public WeatherForecastService(
-            IOptions<WeatherForecastConfig> openWeatherMapConfig, 
-            ICityRequestRepository cityRepository, 
-            ILogger<WeatherForecastService> logger)
+        public CityWeatherService(
+            ICityRequestRepository cityRepository,
+            INotificator notificator,
+            IOptions<WeatherForecastConfig> openWeatherMapConfig,
+            ILogger<CityWeatherService> logger)
         {
             _openWeatherMapConfig = openWeatherMapConfig;
             _cityRepository = cityRepository;
             _logger = logger;
+            _notificator = notificator;
         }
 
         public async Task<CityWeatherResponse> GetByCityAsync(string cityName)
@@ -41,8 +47,10 @@ namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
 
                     var response = await client.GetAsync($"?q={cityName}&appid={_openWeatherMapConfig.Value.Token}&units={UNIT}");
                     if (!response.IsSuccessStatusCode)
-                    {                        
-                        _logger.LogWarning(string.Format(LogMessagesConstant.CITY_WEATHER_NOT_FOUND, cityName));
+                    {
+                        _notificator.Handle(CityWeatherConstants.CITY_NOT_FOUND);
+                        _logger.LogWarning(CityWeatherLogConstants.CITY_NOT_FOUND, cityName);
+
                         return null;
                     }
 
@@ -55,16 +63,25 @@ namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
             }
             catch (Exception error)
             {
+                _notificator.Handle(CityWeatherConstants.WEATHER_CLIENT_ERROR);
                 _logger.LogError(error, error.Message);
+
                 return null;
             }
         }
 
-        public async Task AddAsync(string cityName)
+        public async Task AddAsync(AddCityRequestCommand command)
         {
             try
             {
-                await _cityRepository.AddAsync(new CityRequestEntity(cityName));
+                var cityRequestEntity = new CityRequestEntity(command.CityName);
+                if (!cityRequestEntity.IsValid())
+                {
+                    _logger.LogInformation(CityWeatherLogConstants.ADD_CITY_WEATHER_ERROR, cityRequestEntity.CityName);
+                    return;
+                }
+
+                await _cityRepository.AddAsync(cityRequestEntity);
             }
             catch (Exception error)
             {

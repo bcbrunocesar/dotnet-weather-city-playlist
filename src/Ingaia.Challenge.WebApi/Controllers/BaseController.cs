@@ -17,11 +17,11 @@ namespace Ingaia.Challenge.WebApi.Controllers
 
         protected bool IsValid() => !_notificator.HasNotification();
 
-        protected IActionResult CustomResponse(object result = null)
+        protected IActionResult CustomResponse(object result = default)
         {
             if (IsValid())
-            {
-                return Ok(new SuccessResponse(result));
+            {                
+                return Ok(new SuccessResponse(result, _notificator.GetSuccessNotification()));
             }
 
             if (_notificator.HasNotification())

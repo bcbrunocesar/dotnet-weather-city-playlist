@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Services.AppService
 {
-    public interface IAppService
+    public interface IWeatherPlaylistService
     {
         Task<IEnumerable<CityRequestStatisticsResponse>> GetRequestStatisticsAsync();
         Task<IEnumerable<string>> GetWeatherPlaylistAsync(string cityName);

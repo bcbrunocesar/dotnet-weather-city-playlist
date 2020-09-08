@@ -2,6 +2,7 @@
 {
     public enum ENotificationType
     {
+        Success = 0,
         Business = 1,
         Unauthorized = 2,
         Forbidden = 3,

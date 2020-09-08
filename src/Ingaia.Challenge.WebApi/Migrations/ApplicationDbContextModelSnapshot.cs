@@ -16,7 +16,7 @@ namespace Ingaia.Challenge.WebApi.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.7");
 
-            modelBuilder.Entity("Ingaia.Challenge.WebApi.Models.CityRequestModel", b =>
+            modelBuilder.Entity("Ingaia.Challenge.WebApi.Entities.CityRequestEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,16 +33,16 @@ namespace Ingaia.Challenge.WebApi.Migrations
                     b.ToTable("CitiesRequests");
                 });
 
-            modelBuilder.Entity("Ingaia.Challenge.WebApi.Models.UserModel", b =>
+            modelBuilder.Entity("Ingaia.Challenge.WebApi.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Fullname")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("Password")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Username")

@@ -1,5 +1,6 @@
 ﻿using Ingaia.Challenge.WebApi.Config;
 using Ingaia.Challenge.WebApi.Constants;
+using Ingaia.Challenge.WebApi.Constants.Logs;
 using Ingaia.Challenge.WebApi.Entities;
 using Ingaia.Challenge.WebApi.Infrastructure.Enums;
 using Ingaia.Challenge.WebApi.Infrastructure.Notificator;
@@ -38,11 +39,18 @@ namespace Ingaia.Challenge.WebApi.Services.UserService
 
         public async Task AddUserAsync(RegisterUserCommand command)
         {
-            // TODO: Validate
-            var user = new UserEntity(command.Username);
-            user.Password = HashPassword(user, command.Password);
+            var user = new UserEntity(command.Fullname, command.Username);
+            user.SetPasswordHashed(HashPassword(user, command.Password));
+
+            if (!user.IsValid())
+            {
+                _logger.LogInformation(UserLogConstants.ADD_USER_ERROR);
+                return;
+            }
 
             await _userRepository.AddUserAsync(user);
+
+            _notificator.Handle(UserConstants.ADD_SUCCESS, ENotificationType.Success);
         }
 
         public async Task<string> AuthenticateAsync(AuthenticateCommand command)
@@ -50,16 +58,16 @@ namespace Ingaia.Challenge.WebApi.Services.UserService
             var user = await _userRepository.GetAsync(command.Username);
             if (user is null)
             {
-                _notificator.Handle("User not found.", ENotificationType.NotFound);
-                _logger.LogInformation(LogMessagesConstant.USER_NOT_FOUND);
+                _notificator.Handle(UserConstants.NOT_FOUND, ENotificationType.NotFound);
+                _logger.LogInformation(UserLogConstants.NOT_FOUND);
 
                 return default;
             }
 
             if (!VerifiyUserPassword(user, command.Password))
             {
-                _notificator.Handle("User or password invalid.", ENotificationType.Business);
-                _logger.LogInformation(LogMessagesConstant.USER_PASSWORD_INVALID);
+                _notificator.Handle(UserConstants.USER_OR_PASSWORD_INVALID, ENotificationType.Business);
+                _logger.LogInformation(UserLogConstants.USER_OR_PASSWORD_INVALID);
 
                 return default;
             }

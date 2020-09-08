@@ -11,9 +11,9 @@ namespace Ingaia.Challenge.WebApi.Controllers
     [Route("api/v1/weather-playlist")]
     public class PlaylistController : BaseController
     {
-        private readonly IAppService _appService;
+        private readonly IWeatherPlaylistService _appService;
 
-        public PlaylistController(INotificator notificator, IAppService appService)
+        public PlaylistController(INotificator notificator, IWeatherPlaylistService appService)
             : base(notificator)
         {
             _appService = appService;

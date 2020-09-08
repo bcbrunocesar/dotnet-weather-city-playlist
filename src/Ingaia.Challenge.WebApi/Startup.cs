@@ -37,7 +37,10 @@ namespace Ingaia.Challenge.WebApi
             ConfigureAuthentication(services);
 
             services.AddCors();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
             services.AddMemoryCache();
             services.AddLogging();
 
@@ -120,14 +123,13 @@ namespace Ingaia.Challenge.WebApi
 
         private void InitializeDI(IServiceCollection services)
         {
-            services.AddTransient<IWeatherForecastService, WeatherForecastService>();
+            services.AddTransient<ICityWeatherService, CityWeatherService>();
             services.AddTransient<IPlaylistService, PlaylistService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IAppService, AppService>();
+            services.AddTransient<IWeatherPlaylistService, WeatherPlaylistService>();
             services.AddTransient<ICityRequestRepository, CityRequestRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddScoped<INotificator, Notificator>();
-
         }
 
         private void InitializeConfigModels(IServiceCollection services)
