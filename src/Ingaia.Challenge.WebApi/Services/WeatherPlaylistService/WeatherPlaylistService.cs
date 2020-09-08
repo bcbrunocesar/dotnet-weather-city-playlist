@@ -80,7 +80,7 @@ namespace Ingaia.Challenge.WebApi.Services.AppService
             {
                 if (!_memoryCache.TryGetValue(cityName, out IEnumerable<string> tracks))
                 {
-                    var cityWeatherNow = await _weatherForecastService.GetByCityAsync(cityName);
+                    var cityWeatherNow = _weatherForecastService.GetByCity(cityName);
                     if (cityWeatherNow is null) 
                     {
                         _notificator.Handle(WeatherPlaylistConstants.CITY_NOT_FOUND);

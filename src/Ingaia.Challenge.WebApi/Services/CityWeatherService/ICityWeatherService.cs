@@ -7,6 +7,6 @@ namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
     public interface ICityWeatherService
     {
         Task AddAsync(AddCityRequestCommand command);
-        Task<CityWeatherResponse> GetByCityAsync(string cityName);
+        CityWeatherResponse GetByCity(string cityName);
     }
 }

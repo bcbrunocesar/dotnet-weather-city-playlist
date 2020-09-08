@@ -9,8 +9,8 @@ using Ingaia.Challenge.WebApi.Repositories.CityRequestRepository;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
@@ -36,31 +36,32 @@ namespace Ingaia.Challenge.WebApi.Services.WeatherForecastService
             _notificator = notificator;
         }
 
-        public async Task<CityWeatherResponse> GetByCityAsync(string cityName)
+        public CityWeatherResponse GetByCity(string cityName)
         {
             try
             {
                 var cityWeatherResponse = new CityWeatherResponse();
-                using (var client = new HttpClient())
+                var client = new RestClient(_openWeatherMapConfig.Value.BaseEndpoint);
+                var request = new RestRequest("")
+                    .AddParameter("q", cityName)
+                    .AddParameter("appid", _openWeatherMapConfig.Value.Token)
+                    .AddParameter("units", UNIT);
+
+                var response = client.Get(request);
+                if (!response.IsSuccessful)
                 {
-                    client.BaseAddress = new Uri(_openWeatherMapConfig.Value.BaseEndpoint);
+                    _notificator.Handle(CityWeatherConstants.CITY_NOT_FOUND);
+                    _logger.LogWarning(CityWeatherLogConstants.CITY_NOT_FOUND, cityName);
 
-                    var response = await client.GetAsync($"?q={cityName}&appid={_openWeatherMapConfig.Value.Token}&units={UNIT}");
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        _notificator.Handle(CityWeatherConstants.CITY_NOT_FOUND);
-                        _logger.LogWarning(CityWeatherLogConstants.CITY_NOT_FOUND, cityName);
-
-                        return null;
-                    }
-
-                    var jsonAsString = await response.Content.ReadAsStringAsync();
-                    var jsonObject = JObject.Parse(jsonAsString)["main"];
-                    cityWeatherResponse = jsonObject.ToObject<CityWeatherResponse>();
+                    return null;
                 }
 
+                var jsonAsString = response.Content;
+                var jsonObject = JObject.Parse(jsonAsString)["main"];
+                cityWeatherResponse = jsonObject.ToObject<CityWeatherResponse>();
+
                 return cityWeatherResponse;
-            }
+            }        
             catch (Exception error)
             {
                 _notificator.Handle(CityWeatherConstants.WEATHER_CLIENT_ERROR);
